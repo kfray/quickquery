@@ -42,6 +42,11 @@ import os
 import copy
 
 def sort_queries(queries_file):
+    """Makes an intermediate list of queries, sorted, and a list
+    of the number of pops that will be required from the stack.
+    The number of pops is calculated between the (sorted) ith and
+    (i+1)th string 
+    """
     queries = []
     with open(queries_file, 'r') as q:
         for line in q:
@@ -54,7 +59,12 @@ def sort_queries(queries_file):
     return queries, pops
 
 def pop_count(old_string, new_string):
-    # this wants the input file in the form A AG AGC AGT AGTC CA CAC CC CCA ie alphabetized, with shortest prefernce 
+    """
+    Counts the number of remaining characters in the old_string
+    after and including the first character mismatch occurs
+    between the old_string and the new_string.
+    """
+    
     i = 0 #the numbe of known matches
     smaller = min(len(old_string), len(new_string))
     while i < smaller:
@@ -65,18 +75,32 @@ def pop_count(old_string, new_string):
     return len(old_string) - i 
 
 def tally_all(lines_to_write, queries, file_name):
+    """
+    Writes each item with a found query to one file, in the order 
+    as originally appeared.
+    """
+
     with open(file_name + ".txt","a") as a:
         for line in lines_to_write:
             a.write(line)
 
 def tally_each(lines_to_write, queries,  file_name):
+    """
+    Writes an item to the appropriate file (file_name_query.txt)
+    for each query found in it.
+    """
+
     for query in queries:
         with open( file_name + "_" + query + ".txt", "a") as f:
             for line in lines_to_write:
                 f.write(line)
 
-def cqnc(seq_file,queries_file, file_name="sequenced",n_lines=4, place=2, tally=tally_all ):
-    """reads into a list a file that executes query on n_lines sets"""
+def cqnc(seq_file,queries_file, file_name="sequenced",n_lines=4,
+             place=2, tally=tally_all ):
+    """Reads from items of length n_lines in seq_file and checks to see if any
+    query from the queries_file appears in the place line.  If so, it writes the item
+    to file(s) according to the tally function specified."""
+
     queries, pops = sort_queries(queries_file)
     place = place - 1
     line_max = n_lines - 1
@@ -85,7 +109,6 @@ def cqnc(seq_file,queries_file, file_name="sequenced",n_lines=4, place=2, tally=
         current_lines = []
         for line in f:
             if i < line_max:
-                # append four lines at a time for 0,1,2
                 current_lines.append(line)
                 i+=1
             elif i == line_max:
@@ -102,17 +125,44 @@ def cqnc(seq_file,queries_file, file_name="sequenced",n_lines=4, place=2, tally=
 
 
 def match_queries(string, queries, pops):
-    """ takes a string and finds all matches for sequnce up to an index, so the stacj is a list of lists, which at i is the list
-    of indices of sthe string that are found in the current querry"""
+    """
+    Efficiently checks a string for each query in queries by employing
+    *sorted* queries and a stack.
+
+    Any subsequence beginning at the
+    first character of a query is only checked once.  This is
+    is accomplished by employing a stack structure to store 
+    the last indices of matching subsequences and capitalizing
+    on the sorted query list.
+    """
+    
     def match_next(string, letter, indices):
+        """
+        Given the last indices matching the previous substring, 
+        checks the subsequent indices against the next character in
+        the substring.
+        """
+
         return [index + 1 for index in indices if (index + 1) < len(string) and string[index+1] == letter ]
+    
     def match_string(string, query, stack):
+        """
+        Checks if a query is contained within a string
+        and returns a stack of lists, such that list at position i
+        is the list of indices of the string such that
+        query[0:i] == string[index-i:index] .
+
+        This is sped up by the passing of stacks between
+        queries that share initial substrings.
+        """
+        
         for i in range(max(0,len(stack)-1), len(query)):
             if i == 0:
                 stack.append(match_next(string, query[i], range(-1,len(string)-1)))
             else:
                 stack.append(match_next(string, query[i], stack[-1]))
         return bool(stack[-1]), stack
+
     matches = []
     stack = []
     for query, pop in zip(queries, pops):
@@ -137,7 +187,6 @@ def main():
         if not arg:
             del args_dict[key]
     cqnc(**args_dict)
-    #cqnc(args.seq_file, args.queries_file, args.dest_file, args.n_lines, args.place, args.tally )
 
 if __name__ == '__main__':
     main()
