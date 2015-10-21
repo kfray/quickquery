@@ -3,12 +3,38 @@ Designed to quickly and memory-efficiently query structured files, particularly 
 
 The ```quickquery.py``` module  was created as a memory-efficient and speedy way to pull sections of text from a text file that has known structure.  A file follow the form of `n_lines` correspond to one item, and the substring to be searched for occurs on the `place` line in each item.
 
+##Usage
+
+###Command line
+Command line ussage can be executed by
+
+```
+python quickquery.py -sf your_squence_file.txt -qf your_queries_file.txt
+```
+The arguments, all others of which are optional, are:
+
+```
+'-sf','--seq_file',
+'-qf','--queries_file',
+'-df','--dest_file',
+'-nl','--n_lines',
+'-pl','--place',
+'-ty','--tally',
+```
+which refer, respectively, to
+```
+seq_file,queries_file, file_name="sequenced",n_lines=4, place=2, tally=tally_all
+```
+
+###As a module
+
 The main worker function is:
 > ```cqnc(seq_file,queries_file, file_name="sequenced",n_lines=4, place=2, tally=tally_all )```
 
 where ```fille_name``` is the prefix of the destination file.
 
 The module's docstring provides further details.
+
 
 ##Sample Input and Output:
 
