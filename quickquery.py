@@ -14,7 +14,7 @@ __email__ = "frailey@gmail.com"
         +
         Bar Code
 
-    in which the second line (line = 2) is the line of interest, and all four line
+    in which the second line (place = 2) is the line of interest, and all four line
     (n_line = 4) must be written to the new file.
 
     Other than the default values, there is no reason the structured data must
@@ -37,6 +37,7 @@ __email__ = "frailey@gmail.com"
 
 """
 
+import argparse
 import os
 import copy
 
@@ -122,3 +123,21 @@ def match_queries(string, queries, pops):
             matches.append(query)
     return matches
 
+def main():
+    parser = argparse.ArgumentParser(description="Do something.")
+    parser.add_argument('-sf','--seq_file', type=str, required=True)
+    parser.add_argument('-qf','--queries_file', type=str, required=True)
+    parser.add_argument('-df','--dest_file', type=str, required=False)
+    parser.add_argument('-nl','--n_lines', type=int)
+    parser.add_argument('-pl','--place', type=int)
+    parser.add_argument('-ty','--tally', type=int)
+    args = parser.parse_args()
+    args_dict = args.__dict__
+    for key, arg in args_dict.items():
+        if not arg:
+            del args_dict[key]
+    cqnc(**args_dict)
+    #cqnc(args.seq_file, args.queries_file, args.dest_file, args.n_lines, args.place, args.tally )
+
+if __name__ == '__main__':
+    main()
