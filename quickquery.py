@@ -1,3 +1,42 @@
+__author__ = "Kerstin Frailey, Cornell University Department of Statistics"
+__credits__ = ["Kerstin Frailey", "Nicholas Santantonio"]
+__email__ = "frailey@gmail.com"
+
+"""This module was developed to provide quick querying of structured
+    files in which finding a substring in one line then requires the
+    copying of that line and nearby lines to be saved to a new file.
+
+    This was particularly designed for genetic sequencing data of the
+    of the format:
+
+        Tag line
+        Genetic sequencing
+        +
+        Bar Code
+
+    in which the second line (line = 2) is the line of interest, and all four line
+    (n_line = 4) must be written to the new file.
+
+    Other than the default values, there is no reason the structured data must
+    conform.  Alterations can be made by adjusting line and n_line appropriately.
+
+    This module assumes that the strings of interest (queries) that are sought
+    to be found in the specified line (as substrings) are in a .txt file
+    in which each line is one query:
+
+        geneticSubsequence1
+        geneticSubsequence2
+
+    Currently, this module assumes this .txt file can be held in memory.
+
+    Found substrings can be written into one file (tally=tally_all) or into 
+    separate files (tally=tally_each).
+
+    TODO: Add zip and unzip capabilities.
+    TODO: Add auto execution on files in directory and subdirectories.
+
+"""
+
 import os
 import copy
 
@@ -35,9 +74,10 @@ def tally_each(lines_to_write, queries,  file_name):
             for line in lines_to_write:
                 f.write(line)
 
-def cqnc(seq_file,queries_file, file_name="sequenced",n_lines=4, place=1, tally=tally_all ):
+def cqnc(seq_file,queries_file, file_name="sequenced",n_lines=4, place=2, tally=tally_all ):
     """reads into a list a file that executes query on n_lines sets"""
     queries, pops = sort_queries(queries_file)
+    place = place - 1
     line_max = n_lines - 1
     with open(seq_file, 'r') as f:
         i = 0
