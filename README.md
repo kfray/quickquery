@@ -1,7 +1,24 @@
 # quickquery
 Designed to quickly and memory-efficiently query structured files, particularly genetics, for a set of substrings
 
-The ```quickquery.py``` module  was created as a memory-efficient and speedy way to pull sections of text from a text file that has known structure.  A file follow the form of `n_lines` correspond to one item, and the substring to be searched for occurs on the `place` line in each item.
+The ```quickquery.py``` module  was created as a memory-efficient and speedy way to pull sections of text from a text file that has known structure.  The structure of the file must be such that `n_lines` correspond to one item and the  `place` line (within the n_lines) contains the string which will be searched for a query.
+
+For example: n_lines = 3 , place = 3
+
+The first few lines of the file to be searched for the queries "Marco" and "Polo" might be:
+
+```
+Malcom Reynolds
+Serenity
+Wash plays Marco Polo with reavers.
+Spock
+The needs of the many outweigh the needs of the few. 
+Those are actually the Polo shirts of the future.
+Obi-Wan Kenobi
+These are not the lines you are looking for.
+This is where you should check to make sure though!
+```
+The first six lines would be written to a new file, because the third and sixth line contain "Marco" and/or "Polo".
 
 ##Usage
 
