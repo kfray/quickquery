@@ -55,6 +55,8 @@ The module's docstring provides further details.
 
 ##Sample Input and Output:
 
+On a typical genetic sequencing data, n_lines = 4, place = 2.
+
 ```seq_file``` should be a .txt file of the form
 
 Structured File: Genetic Sequencing
